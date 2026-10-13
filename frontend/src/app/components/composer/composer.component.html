@@ -1,0 +1,27 @@
+<form class="composer" (submit)="$event.preventDefault(); submit()">
+  <textarea
+    #textarea
+    rows="1"
+    [placeholder]="placeholder()"
+    [attr.maxlength]="maxLength"
+    aria-label="Message"
+    (input)="onInput(textarea.value)"
+    (keydown)="onKeydown($event)"
+  ></textarea>
+
+  <div class="composer-bar">
+    @if (showCounter()) {
+      <span class="counter">{{ text().length }} / {{ maxLength }}</span>
+    }
+    @if (isGenerating()) {
+      <button type="button" class="send-btn stop" aria-label="Stop generating" title="Stop generating" (click)="stop.emit()">
+        <app-icon name="stop" [size]="16" />
+      </button>
+    } @else {
+      <button type="submit" class="send-btn" [disabled]="!canSend()" aria-label="Send message" title="Send (Enter)">
+        <app-icon name="arrow-up" [size]="18" />
+      </button>
+    }
+  </div>
+</form>
+<p class="disclaimer">ChatAR is AI and can make mistakes. Please double-check responses.</p>

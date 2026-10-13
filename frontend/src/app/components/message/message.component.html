@@ -1,0 +1,51 @@
+@if (message().role === 'user') {
+  <div class="bubble">{{ message().content }}</div>
+} @else {
+  <div class="avatar" aria-hidden="true">
+    <app-icon name="spark" [size]="18" />
+  </div>
+
+  <div class="body">
+    @if (isWaiting()) {
+      <div class="typing" role="status" aria-label="ChatAR is thinking">
+        <span></span><span></span><span></span>
+      </div>
+    } @else {
+      <div
+        #content
+        class="markdown"
+        [class.error]="message().status === 'error'"
+        [class.streaming]="isStreaming()"
+        [innerHTML]="html()"
+      ></div>
+    }
+
+    @if (!isStreaming()) {
+      <div class="actions">
+        @if (message().status === 'stopped') {
+          <span class="status-note">Stopped</span>
+        }
+        @if (message().status !== 'error') {
+          <button type="button" class="action-btn" [attr.aria-label]="copied() ? 'Copied' : 'Copy answer'" [title]="copied() ? 'Copied' : 'Copy'" (click)="copyAnswer()">
+            <app-icon [name]="copied() ? 'check' : 'copy'" [size]="16" />
+          </button>
+        }
+        @if (canRegenerate()) {
+          <button
+            type="button"
+            class="action-btn"
+            [class.labelled]="message().status === 'error'"
+            aria-label="Regenerate response"
+            title="Regenerate"
+            (click)="regenerate.emit()"
+          >
+            <app-icon name="refresh" [size]="16" />
+            @if (message().status === 'error') {
+              <span>Retry</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+}

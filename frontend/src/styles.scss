@@ -1,0 +1,327 @@
+/* ==========================================================================
+   ChatAR global styles: design tokens, base elements and Markdown content.
+   Markdown styles live here (not in a component) because [innerHTML] content
+   is not reached by Angular's emulated view encapsulation.
+   ========================================================================== */
+
+:root {
+  /* Palette — light (Claude-inspired warm neutrals + terracotta accent) */
+  --bg: #faf9f5;
+  --sidebar-bg: #f0eee6;
+  --surface: #ffffff;
+  --user-bubble: #f0eee6;
+  --text: #141413;
+  --text-secondary: #3d3d3a;
+  --text-muted: #87867f;
+  --border: #e8e6dc;
+  --border-strong: #dedcd1;
+  --border-focus: #c2c0b6;
+  --hover: rgb(31 30 29 / 0.05);
+  --active: rgb(31 30 29 / 0.09);
+  --accent: #d97757;
+  --accent-hover: #c6613f;
+  --accent-soft: rgb(217 119 87 / 0.12);
+  --danger: #b53333;
+  --danger-soft: #fbeeee;
+  --danger-border: #f0c9c9;
+  --code-bg: #f5f4ed;
+  --code-header-bg: #ebe9e0;
+  --inline-code-bg: rgb(31 30 29 / 0.06);
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.03), 0 4px 18px rgb(0 0 0 / 0.04);
+  --shadow-focus: 0 1px 2px rgb(0 0 0 / 0.04), 0 6px 22px rgb(0 0 0 / 0.07);
+  --shadow-drawer: 4px 0 24px rgb(0 0 0 / 0.12);
+
+  /* Typography */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Source Serif 4', ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Layout */
+  --sidebar-width: 272px;
+  --content-width: 768px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262624;
+    --sidebar-bg: #1f1e1d;
+    --surface: #30302e;
+    --user-bubble: #141413;
+    --text: #faf9f5;
+    --text-secondary: #c2c0b6;
+    --text-muted: #9c9a92;
+    --border: #3a3936;
+    --border-strong: #464540;
+    --border-focus: #5d5c56;
+    --hover: rgb(255 255 255 / 0.05);
+    --active: rgb(255 255 255 / 0.09);
+    --accent-soft: rgb(217 119 87 / 0.18);
+    --danger: #f08b8b;
+    --danger-soft: rgb(240 139 139 / 0.1);
+    --danger-border: rgb(240 139 139 / 0.3);
+    --code-bg: #1a1a18;
+    --code-header-bg: #232321;
+    --inline-code-bg: rgb(255 255 255 / 0.08);
+
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 18px rgb(0 0 0 / 0.18);
+    --shadow-focus: 0 1px 2px rgb(0 0 0 / 0.25), 0 6px 22px rgb(0 0 0 / 0.25);
+    --shadow-drawer: 4px 0 24px rgb(0 0 0 / 0.5);
+
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgb(217 119 87 / 0.25);
+}
+
+/* Thin, unobtrusive scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Square icon button used across components */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+}
+
+/* ---------- Markdown answers (serif, like Claude) ---------- */
+.markdown {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text);
+  overflow-wrap: anywhere;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  table,
+  .code-block,
+  pre {
+    margin: 0 0 1em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 1.4em 0 0.6em;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+  }
+
+  h4 {
+    font-size: 1rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.5em;
+  }
+
+  li {
+    margin: 0.3em 0;
+
+    > p {
+      margin: 0.3em 0;
+    }
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  hr {
+    margin: 1.5em 0;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  blockquote {
+    padding: 0.1em 1em;
+    border-left: 3px solid var(--border-strong);
+    color: var(--text-secondary);
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  /* Inline code */
+  :not(pre) > code {
+    padding: 0.15em 0.4em;
+    border-radius: 5px;
+    background: var(--inline-code-bg);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  /* Code blocks (header + copy button are added by MessageComponent) */
+  .code-block {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--code-bg);
+
+    pre {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+    }
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px 6px 14px;
+    background: var(--code-header-bg);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .code-copy {
+    padding: 3px 8px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--hover);
+      color: var(--text);
+    }
+  }
+
+  pre {
+    overflow-x: auto;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--code-bg);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-wrap: normal;
+
+    code {
+      font-family: inherit;
+      white-space: pre;
+    }
+  }
+
+  /* Tables */
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+  }
+
+  th,
+  td {
+    padding: 8px 12px;
+    border: 1px solid var(--border-strong);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--sidebar-bg);
+    font-weight: 600;
+  }
+}

@@ -1,0 +1,64 @@
+<div class="layout" [class.sidebar-open]="sidebarOpen()" [class.mobile]="isMobile()">
+  <aside class="sidebar" [attr.aria-hidden]="!sidebarOpen()" [attr.inert]="sidebarOpen() ? null : ''">
+    <app-sidebar (navigated)="closeSidebarOnMobile()" (closeRequested)="sidebarOpen.set(false)" />
+  </aside>
+
+  @if (isMobile() && sidebarOpen()) {
+    <div class="backdrop" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+  }
+
+  <div class="main">
+    <header class="header">
+      <button
+        type="button"
+        class="icon-btn"
+        [attr.aria-label]="sidebarOpen() ? 'Close sidebar' : 'Open sidebar'"
+        [attr.aria-expanded]="sidebarOpen()"
+        (click)="toggleSidebar()"
+      >
+        <app-icon name="sidebar" [size]="20" />
+      </button>
+
+      <h1 class="chat-title" [title]="title()">{{ title() }}</h1>
+
+      <label class="model-select">
+        <span class="visually-hidden">Model</span>
+        <select [value]="store.model()" (change)="onModelChange($event)" [disabled]="store.isGenerating()">
+          @for (m of models; track m.id) {
+            <option [value]="m.id" [title]="m.description">{{ m.label }}</option>
+          }
+        </select>
+      </label>
+    </header>
+
+    @if (apiDown()) {
+      <div class="banner" role="alert">
+        <app-icon name="alert" [size]="16" />
+        <span>Can't reach the ChatAR server. Make sure the API is running, then</span>
+        <button type="button" class="link-btn" (click)="checkApi()">try again</button>.
+      </div>
+    }
+
+    <main class="content" [class.is-empty]="!hasMessages()">
+      @if (hasMessages()) {
+        <app-chat-thread
+          [messages]="store.messages()"
+          [canRegenerate]="store.canRegenerate()"
+          (regenerate)="store.regenerate()"
+        />
+      }
+
+      <div class="composer-dock">
+        @if (!hasMessages()) {
+          <app-empty-state (pick)="send($event)" />
+        }
+        <app-composer
+          [isGenerating]="store.isGenerating()"
+          [placeholder]="hasMessages() ? 'Reply to ChatAR…' : 'How can I help you today?'"
+          (send)="send($event)"
+          (stop)="store.stop()"
+        />
+      </div>
+    </main>
+  </div>
+</div>

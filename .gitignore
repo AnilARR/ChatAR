@@ -1,0 +1,27 @@
+# ---------- .NET ----------
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+*.trx
+
+# ---------- Node / Angular ----------
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
+
+# ---------- Secrets & local config (never commit API keys) ----------
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+secrets.json
+
+# ---------- OS / IDE ----------
+.DS_Store
+Thumbs.db
+.idea/

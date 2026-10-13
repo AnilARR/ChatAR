@@ -1,0 +1,80 @@
+<div class="sidebar-top">
+  <div class="brand">
+    <app-icon name="spark" [size]="22" class="brand-mark" />
+    <span class="brand-name">ChatAR</span>
+    <button type="button" class="icon-btn close-btn" aria-label="Close sidebar" (click)="closeRequested.emit()">
+      <app-icon name="close" />
+    </button>
+  </div>
+
+  <button type="button" class="new-chat" (click)="newChat()">
+    <span class="new-chat-icon"><app-icon name="plus" [size]="16" /></span>
+    New chat
+  </button>
+</div>
+
+<nav class="recents" aria-label="Recent chats">
+  <h2 class="recents-title">Recents</h2>
+
+  @if (store.conversations().length === 0) {
+    <p class="recents-empty">Your chats will appear here.</p>
+  }
+
+  <ul>
+    @for (conversation of store.conversations(); track conversation.id) {
+      <li
+        class="recent"
+        [class.active]="conversation.id === store.activeId()"
+        [class.editing]="editingId() === conversation.id"
+      >
+        @if (editingId() === conversation.id) {
+          <input
+            #renameInput
+            class="rename-input"
+            [value]="conversation.title"
+            maxlength="100"
+            aria-label="Chat title"
+            (keydown.enter)="commitRename(conversation.id, renameInput.value)"
+            (keydown.escape)="cancelRename()"
+            (blur)="commitRename(conversation.id, renameInput.value)"
+          />
+        } @else {
+          <button
+            type="button"
+            class="recent-link"
+            [attr.aria-current]="conversation.id === store.activeId() ? 'page' : null"
+            [title]="conversation.title"
+            (click)="select(conversation.id)"
+            (dblclick)="startRename(conversation.id, $event)"
+          >
+            {{ conversation.title }}
+          </button>
+          <div class="recent-actions">
+            <button
+              type="button"
+              class="icon-btn"
+              aria-label="Rename chat"
+              title="Rename"
+              (click)="startRename(conversation.id, $event)"
+            >
+              <app-icon name="pencil" [size]="15" />
+            </button>
+            <button
+              type="button"
+              class="icon-btn danger"
+              aria-label="Delete chat"
+              title="Delete"
+              (click)="remove(conversation.id, conversation.title, $event)"
+            >
+              <app-icon name="trash" [size]="15" />
+            </button>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</nav>
+
+<div class="sidebar-footer">
+  <span class="footer-note">Chats are stored in this browser.</span>
+</div>
